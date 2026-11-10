@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('location')->nullable();
             $table->string('pot_size')->nullable();
             $table->unsignedInteger('daily_base_ml')->default(100);
-            $table->unsignedSmallInteger('default_interval_days')->default(7);
+            $table->unsignedInteger('default_interval_days')->default(7);
             $table->string('photo_path')->nullable();
             $table->boolean('is_demo')->default(false);
             $table->timestamps();

@@ -39,12 +39,12 @@ class SampleDataSeeder extends Seeder
                 'daily_base_ml' => 50, 'default_interval_days' => 6,
                 'amount_ml' => 180, 'days_ago' => [20, 14, 9],
             ],
-            // 間隔が長い。間隔 10,8日。最終は3日前
+            // 間隔が長い（多肉植物）。間隔 10,10日。最終は1日前で予測日はこれから
             [
                 'owner' => $user, 'name' => 'サボテン', 'species' => '多肉植物',
                 'location' => '研究室の窓際', 'pot_size' => '小',
                 'daily_base_ml' => 30, 'default_interval_days' => 12,
-                'amount_ml' => 100, 'days_ago' => [21, 13, 3],
+                'amount_ml' => 100, 'days_ago' => [21, 11, 1],
             ],
             // 登録したばかり（記録3件未満）→ 既定値での予測の確認用
             [
@@ -70,6 +70,8 @@ class SampleDataSeeder extends Seeder
                 'pot_size' => $data['pot_size'],
                 'daily_base_ml' => $data['daily_base_ml'],
                 'default_interval_days' => $data['default_interval_days'],
+                // 最初の水やり記録より古くなるよう、作成日を合わせる
+                'created_at' => now()->subDays(max($data['days_ago'])),
             ]);
 
             foreach ($data['days_ago'] as $i => $daysAgo) {
