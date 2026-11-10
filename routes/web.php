@@ -18,18 +18,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/plants/{plant}/watering-logs', [WateringLogController::class, 'index'])
-        ->name('plants.watering-logs.index');
-
-    Route::get('/plants/{plant}/watering-logs/{wateringLog}/edit', [WateringLogController::class, 'edit'])
-        ->name('plants.watering-logs.edit');
-
-    Route::put('/plants/{plant}/watering-logs/{wateringLog}', [WateringLogController::class, 'update'])
-        ->name('plants.watering-logs.update');
-
-    Route::delete('/plants/{plant}/watering-logs/{wateringLog}', [WateringLogController::class, 'destroy'])
-        ->name('plants.watering-logs.destroy');
-});
+Route::middleware('auth')->group(function () {
+    Route::resource('plants.watering-logs', WateringLogController::class)
+        ->only(['index', 'edit', 'update', 'destroy'])
+        ->scoped();});
 
 require __DIR__.'/auth.php';
