@@ -8,38 +8,38 @@ use Illuminate\Support\Collection;
 class PredictionService
 {
     /**
-     * 直近5回分の水やり間隔の平均から次回予測日を計算する
+     * 水やり履歴から次回予測日を計算する
      *
-     * @param Collection|array $waterLogs 水やり履歴の日付（Carbonオブジェクトまたは日付文字列の配列）
-     * @param float $sunlightFactor 日当たり補正係数（デフォルト: 1.0 / 日向: 0.8 / 日陰: 1.2 など）
+     * @param Collection|array $waterLogs 水やり履歴の日付
+     * @param int $defaultIntervalDays 記録不足時の既定間隔（日数）
      * @return Carbon|null
      */
-    public function predictNextWateringDate($waterLogs, float $sunlightFactor = 1.0): ?Carbon
+    public function predictNextWateringDate($waterLogs, int $defaultIntervalDays = 7): ?Carbon
     {
         $logs = collect($waterLogs)->map(fn($date) => Carbon::parse($date))->sort()->values();
 
-        // 記録が2回未満の場合は計算不可（次回予測日はnull）
-        if ($logs->count() < 2) {
+        // 0件の場合は予測不可
+        if ($logs->isEmpty()) {
             return null;
         }
 
-        // 直近最大6回分の記録から間隔（最大5個）を抽出
-        $recentLogs = $logs->take(-6);
+        $lastWateringDate = $logs->last();
+
+        // 記録が3件未満（1件または2件）の場合は既定間隔を使用
+        if ($logs->count() < 3) {
+            return $lastWateringDate->copy()->addDays($defaultIntervalDays);
+        }
+
+        // 直近最大6件の記録を抽出し、キーを振り直す
+        $recentLogs = $logs->take(-6)->values();
         $intervals = [];
 
         for ($i = 0; $i < $recentLogs->count() - 1; $i++) {
             $intervals[] = $recentLogs[$i]->diffInDays($recentLogs[$i + 1]);
         }
 
-        // 平均間隔（日数）の計算
-        $averageInterval = array_sum($intervals) / count($intervals);
+        $averageInterval = (int) round(array_sum($intervals) / count($intervals));
 
-        // 日当たりなどの環境補正を適用
-        $adjustedInterval = max(1, (int) round($averageInterval * $sunlightFactor));
-
-        // 最後の水やり日に補正後間隔を足して次回予測日を算出
-        $lastWateringDate = $recentLogs->last();
-
-        return $lastWateringDate->copy()->addDays($adjustedInterval);
+        return $lastWateringDate->copy()->addDays($averageInterval);
     }
 }

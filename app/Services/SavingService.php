@@ -5,39 +5,36 @@ namespace App\Services;
 class SavingService
 {
     /**
-     * 節水量および節水率を計算する
+     * 要件定義 F-12 に基づき節水量（ml）および節水率（%）を計算する
      *
-     * @param int $totalDays 対象期間の日数
-     * @param int $actualWateringCount 予測に基づいて実際に水やりを行った回数
-     * @param float $waterAmountPerTime 1回あたりの水やり量（L）
-     * @param int $fixedIntervalDays 従来の固定周期（例: 1日1回なら1）
+     * @param int $totalDays 期間日数
+     * @param array $actualAmountMlList 実際の給水量（amount_ml）の配列
+     * @param float $dailyBaseMl 1日あたりの想定給水量（ml）
      * @return array
      */
     public function calculateSavings(
         int $totalDays,
-        int $actualWateringCount,
-        float $waterAmountPerTime = 10.0,
-        int $fixedIntervalDays = 1
+        array $actualAmountMlList,
+        float $dailyBaseMl = 500.0
     ): array {
-        // 従来の想定水やり回数
-        $fixedCount = (int) floor($totalDays / $fixedIntervalDays);
+        // 想定給水量（ml）
+        $baselineAmountMl = $dailyBaseMl * $totalDays;
 
-        // 基準水量と実際の使用水量
-        $baselineAmount = $fixedCount * $waterAmountPerTime;
-        $actualAmount = $actualWateringCount * $waterAmountPerTime;
+        // 実際の給水量の合計（ml）
+        $actualAmountMl = (float) array_sum($actualAmountMlList);
 
-        // 節水量（L）
-        $savedAmount = max(0.0, $baselineAmount - $actualAmount);
+        // 節水量（ml）※与えすぎの場合はマイナス
+        $savedAmountMl = $baselineAmountMl - $actualAmountMl;
 
         // 節水率（%）
-        $savingRate = $baselineAmount > 0
-            ? round(($savedAmount / $baselineAmount) * 100, 1)
+        $savingRate = $baselineAmountMl > 0
+            ? round(($savedAmountMl / $baselineAmountMl) * 100, 1)
             : 0.0;
 
         return [
-            'baseline_amount' => $baselineAmount,
-            'actual_amount' => $actualAmount,
-            'saved_amount' => $savedAmount,
+            'baseline_amount_ml' => $baselineAmountMl,
+            'actual_amount_ml' => $actualAmountMl,
+            'saved_amount_ml' => $savedAmountMl,
             'saving_rate' => $savingRate,
         ];
     }

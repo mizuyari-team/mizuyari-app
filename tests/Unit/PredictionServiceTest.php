@@ -3,7 +3,6 @@
 namespace Tests\Unit;
 
 use App\Services\PredictionService;
-use Carbon\Carbon;
 use PHPUnit\Framework\TestCase;
 
 class PredictionServiceTest extends TestCase
@@ -21,8 +20,6 @@ class PredictionServiceTest extends TestCase
      */
     public function test_predicts_next_watering_date_correctly_with_five_intervals(): void
     {
-        // 10/1, 10/4(3日差), 10/8(4日差), 10/11(3日差), 10/16(5日差), 10/21(5日差)
-        // 平均間隔: (3 + 4 + 3 + 5 + 5) / 5 = 4日
         $logs = [
             '2026-10-01',
             '2026-10-04',
@@ -34,38 +31,49 @@ class PredictionServiceTest extends TestCase
 
         $nextDate = $this->service->predictNextWateringDate($logs);
 
-        // 10/21 の 4日後 = 10/25
         $this->assertEquals('2026-10-25', $nextDate?->format('Y-m-d'));
     }
 
     /**
-     * 記録が2回未満の場合は null（予測不可）が返るか
+     * 7件以上の記録があってもキーが振り直されてエラーにならず正常計算されるか
      */
-    public function test_returns_null_when_logs_are_insufficient(): void
+    public function test_handles_more_than_six_logs_without_index_error(): void
     {
-        $logs = ['2026-10-01'];
+        $logs = [
+            '2026-10-01',
+            '2026-10-03',
+            '2026-10-05',
+            '2026-10-07',
+            '2026-10-09',
+            '2026-10-11',
+            '2026-10-13',
+            '2026-10-15', // 直近6件は 10/05 〜 10/15（間隔はすべて2日）
+        ];
 
         $nextDate = $this->service->predictNextWateringDate($logs);
 
-        $this->assertNull($nextDate);
+        $this->assertEquals('2026-10-17', $nextDate?->format('Y-m-d'));
     }
 
     /**
-     * 日当たり補正（日向: 0.8倍）が正しく計算されるか
+     * 記録が0件の場合は null が返るか
      */
-    public function test_applies_sunlight_factor_correctly(): void
+    public function test_returns_null_when_logs_are_empty(): void
     {
-        // 平均間隔 5日
-        $logs = [
-            '2026-10-01',
-            '2026-10-06',
-            '2026-10-11',
-        ];
+        $this->assertNull($this->service->predictNextWateringDate([]));
+    }
 
-        // 5日 * 0.8 = 4日
-        $nextDate = $this->service->predictNextWateringDate($logs, 0.8);
+    /**
+     * 記録が3件未満（1〜2件）の場合は既定間隔が使用されるか
+     */
+    public function test_uses_default_interval_when_logs_are_less_than_three(): void
+    {
+        $logs = ['2026-10-01', '2026-10-05'];
 
-        // 10/11 の 4日後 = 10/15
-        $this->assertEquals('2026-10-15', $nextDate?->format('Y-m-d'));
+        // 既定値 5日 を指定
+        $nextDate = $this->service->predictNextWateringDate($logs, 5);
+
+        // 10/05 + 5日 = 10/10
+        $this->assertEquals('2026-10-10', $nextDate?->format('Y-m-d'));
     }
 }
