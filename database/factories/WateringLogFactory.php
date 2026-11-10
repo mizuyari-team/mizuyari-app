@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Plant;
 use App\Models\WateringLog;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -18,7 +19,11 @@ class WateringLogFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'plant_id' => Plant::factory(),
+            'watered_at' => fake()->dateTimeBetween('-3 weeks', 'now'),
+            'amount_ml' => fake()->numberBetween(100, 250),
+            'memo' => null,
+            'photo_path' => null,
         ];
     }
 }

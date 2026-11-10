@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('plant_id')->constrained()->cascadeOnDelete();
             $table->dateTime('watered_at');
+            $table->unsignedInteger('amount_ml');
             $table->text('memo')->nullable();
+            $table->string('photo_path')->nullable();
             $table->timestamps();
         });
     }
@@ -28,4 +30,3 @@ return new class extends Migration
         Schema::dropIfExists('watering_logs');
     }
 };
-

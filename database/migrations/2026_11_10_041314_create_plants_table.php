@@ -17,8 +17,11 @@ return new class extends Migration
             $table->string('name');
             $table->string('species')->nullable();
             $table->string('location')->nullable();
-            $table->unsignedSmallInteger('watering_interval_days')->default(7);
-            $table->text('memo')->nullable();
+            $table->string('pot_size')->nullable();
+            $table->unsignedInteger('daily_base_ml')->default(100);
+            $table->unsignedSmallInteger('default_interval_days')->default(7);
+            $table->string('photo_path')->nullable();
+            $table->boolean('is_demo')->default(false);
             $table->timestamps();
         });
     }
