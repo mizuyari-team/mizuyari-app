@@ -16,6 +16,7 @@ class LineNotifier
 
         if (empty($token)) {
             Log::error('LINE送信失敗: LINE_CHANNEL_ACCESS_TOKEN が設定されていません');
+
             return false;
         }
 
@@ -33,6 +34,7 @@ class LineNotifier
                 'status' => $response->status(),
                 'body' => $response->body(),
             ]);
+
             return false;
         }
 

@@ -21,6 +21,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::resource('plants.watering-logs', WateringLogController::class)
         ->only(['index', 'edit', 'update', 'destroy'])
-        ->scoped();});
+        ->scoped();
+});
 
 require __DIR__.'/auth.php';

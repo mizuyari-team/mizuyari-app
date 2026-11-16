@@ -10,7 +10,7 @@ class WateringLogController extends Controller
 {
     public function index(Plant $plant)
     {
-        $this->authorizePlant($plant);
+        $this->ensurePlantOwner($plant);
 
         $wateringLogs = $plant->wateringLogs()
             ->latest('watered_at')
@@ -31,7 +31,7 @@ class WateringLogController extends Controller
         $this->ensurePlantOwner($plant);
 
         $validated = $request->validate([
-            'watered_at' => ['required', 'date'],
+            'watered_at' => ['required', 'date', 'before_or_equal:now'],
             'amount_ml' => ['required', 'integer', 'min:1'],
             'memo' => ['nullable', 'string', 'max:1000'],
         ]);
