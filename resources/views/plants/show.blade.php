@@ -13,7 +13,7 @@
 
                 <div class="grid gap-5 px-3 pb-3 pt-4 sm:px-5 sm:pb-5 sm:pt-5">
                     <div class="grid gap-1.5">
-                        <h1 id="plant-details-heading" class="plant-serif break-words text-3xl font-semibold leading-tight sm:text-4xl">{{ $plant->name }}</h1>
+                        <h1 id="plant-details-heading" class="break-words text-3xl font-semibold leading-tight sm:text-4xl">{{ $plant->name }}</h1>
                         @if ($plant->created_at)
                             <p class="text-xs text-[color:var(--plant-muted)]">
                                 登録日
@@ -64,7 +64,7 @@
             </section>
 
             <section aria-labelledby="latest-watering-heading" class="plant-paper grid gap-4 rounded-xl border p-5 sm:p-6">
-                <h2 id="latest-watering-heading" class="plant-serif border-b border-[color:var(--plant-line)] pb-3 text-xl font-semibold">最新の記録</h2>
+                <h2 id="latest-watering-heading" class="border-b border-[color:var(--plant-line)] pb-3 text-xl font-semibold">最新の記録</h2>
                 @if ($latestLog)
                     <dl class="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
                         <div>
