@@ -131,3 +131,59 @@ html[data-plant-theme="dark"] {
 .plant-app .text-red-600 {
     color: var(--plant-danger);
 }
+
+/* 水やりカレンダー */
+.plant-app .fc {
+    --fc-border-color: var(--plant-line);
+    --fc-page-bg-color: var(--plant-paper);
+    --fc-neutral-bg-color: var(--plant-soft);
+    --fc-neutral-text-color: var(--plant-muted);
+    --fc-today-bg-color: #eee5d5;
+
+    color: var(--plant-ink);
+    font-family: inherit;
+}
+
+.plant-app .fc .fc-toolbar-title,
+.plant-app .fc .fc-col-header-cell-cushion,
+.plant-app .fc .fc-daygrid-day-number {
+    color: var(--plant-ink);
+}
+
+.plant-app .fc .fc-button-primary {
+    background-color: var(--plant-action);
+    border-color: var(--plant-action);
+    color: var(--plant-action-ink);
+    box-shadow: none;
+}
+
+.plant-app .fc .fc-button-primary:hover,
+.plant-app .fc .fc-button-primary:not(:disabled):active,
+.plant-app .fc .fc-button-primary:not(:disabled).fc-button-active {
+    background-color: var(--plant-action-hover);
+    border-color: var(--plant-action-hover);
+}
+
+.plant-app .fc .fc-button-primary:focus {
+    box-shadow: 0 0 0 2px var(--plant-line);
+}
+
+.plant-app .fc .fc-daygrid-day.fc-day-today {
+    background-color: #eee5d5;
+}
+
+.plant-app .fc .fc-day-other .fc-daygrid-day-number {
+    color: var(--plant-muted);
+}
+
+.plant-app .fc .fc-event {
+    border: 0;
+    border-radius: 4px;
+    padding: 2px 4px;
+    font-weight: 600;
+}
+
+.plant-app .fc .fc-event-title,
+.plant-app .fc .fc-event-time {
+    color: #fffaf0;
+}

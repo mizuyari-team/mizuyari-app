@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WateringLogController;
 use App\Http\Controllers\WateringLogEntryController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CalendarController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -24,6 +25,12 @@ Route::middleware('auth')->group(function () {
     Route::resource('plants.watering-logs', WateringLogEntryController::class)
         ->only(['create', 'store'])
         ->scoped();
+
+    Route::get('/calendar', [CalendarController::class, 'index'])
+        ->name('calendar.index');
+
+    Route::get('/calendar/events', [CalendarController::class, 'events'])
+        ->name('calendar.events');
 });
 
 Route::middleware('auth')->group(function () {
