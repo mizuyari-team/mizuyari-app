@@ -12,7 +12,7 @@ class PredictionServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new PredictionService();
+        $this->service = new PredictionService;
     }
 
     /**

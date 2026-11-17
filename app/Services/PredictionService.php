@@ -10,13 +10,12 @@ class PredictionService
     /**
      * 水やり履歴から次回予測日を計算する
      *
-     * @param Collection|array $waterLogs 水やり履歴の日付
-     * @param int $defaultIntervalDays 記録不足時の既定間隔（日数）
-     * @return Carbon|null
+     * @param  Collection|array  $waterLogs  水やり履歴の日付
+     * @param  int  $defaultIntervalDays  記録不足時の既定間隔（日数）
      */
     public function predictNextWateringDate($waterLogs, int $defaultIntervalDays = 7): ?Carbon
     {
-        $logs = collect($waterLogs)->map(fn($date) => Carbon::parse($date))->sort()->values();
+        $logs = collect($waterLogs)->map(fn ($date) => Carbon::parse($date))->sort()->values();
 
         // 0件の場合は予測不可
         if ($logs->isEmpty()) {
