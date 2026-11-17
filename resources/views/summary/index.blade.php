@@ -11,9 +11,11 @@
                     @foreach ([7 => '7日間', 30 => '30日間', 90 => '90日間'] as $periodDays => $label)
                         <a
                             href="{{ route('summary.index', ['days' => $periodDays]) }}"
+                            @if ($days === $periodDays)
+                                style="background-color: var(--plant-action, #274238); border-color: var(--plant-action, #274238); color: #ffffff;"
+                            @endif
                             @class([
                                 'inline-flex min-h-10 items-center rounded-md border px-3 text-xs font-semibold transition sm:text-sm',
-                                'border-[var(--plant-action)] bg-[var(--plant-action)] text-white' => $days === $periodDays,
                                 'plant-secondary' => $days !== $periodDays,
                             ])
                         >
@@ -114,7 +116,6 @@
         </section>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             if (typeof Chart === 'undefined') return;
