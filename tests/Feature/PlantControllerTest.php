@@ -6,8 +6,6 @@ use App\Models\Plant;
 use App\Models\User;
 use App\Models\WateringLog;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\View;
 use Tests\TestCase;
 
 class PlantControllerTest extends TestCase
@@ -16,12 +14,6 @@ class PlantControllerTest extends TestCase
 
     public function test_index_displays_plants_sorted_by_next_predicted_date()
     {
-        // テスト用の一時フォルダに仮のBladeファイルを置く（本番コードは汚さない）
-        $tempViewPath = storage_path('framework/testing/views');
-        File::ensureDirectoryExists($tempViewPath . '/plants');
-        File::put($tempViewPath . '/plants/index.blade.php', 'dummy');
-        View::addLocation($tempViewPath);
-
         $user = User::factory()->create();
 
         // 予測日が遠い植物（水やり直後）
@@ -50,8 +42,35 @@ class PlantControllerTest extends TestCase
 
         $response->assertStatus(200);
 
-        // View に渡された plants の並び順を検証（予測日が近い $plantSoon が先頭）
         $plants = $response->viewData('plants');
         $this->assertEquals($plantSoon->id, $plants->first()->id);
+    }
+
+    public function test_show_displays_own_plant()
+    {
+        $user = User::factory()->create();
+        $plant = Plant::factory()->create([
+            'user_id' => $user->id,
+            'is_demo' => false,
+        ]);
+
+        $response = $this->actingAs($user)->get(route('plants.show', $plant));
+
+        $response->assertStatus(200);
+        $response->assertSee($plant->name);
+    }
+
+    public function test_show_forbids_viewing_other_users_plant()
+    {
+        $user = User::factory()->create();
+        $otherUser = User::factory()->create();
+        $otherPlant = Plant::factory()->create([
+            'user_id' => $otherUser->id,
+            'is_demo' => false,
+        ]);
+
+        $response = $this->actingAs($user)->get(route('plants.show', $otherPlant));
+
+        $response->assertStatus(403);
     }
 }

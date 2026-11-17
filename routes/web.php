@@ -18,8 +18,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/plants', [PlantController::class, 'index'])->name('plants.index');
-    Route::get('/plants/{plant}', [PlantController::class, 'show'])->name('plants.show');
+    Route::resource('plants', PlantController::class)->only(['index', 'show']);
 });
 
 require __DIR__.'/auth.php';
