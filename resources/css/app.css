@@ -1,3 +1,136 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.plant-app {
+    --plant-canvas: #f2ede2;
+    --plant-paper: #fcf9f2;
+    --plant-soft: #e8e0d2;
+    --plant-line: #d8cdbb;
+    --plant-field-line: #938674;
+    --plant-ink: #302c24;
+    --plant-muted: #655c4f;
+    --plant-action: #454d35;
+    --plant-action-hover: #343b27;
+    --plant-action-ink: #fffaf0;
+    --plant-due: #81432c;
+    --plant-due-paper: #f2e4d7;
+    --plant-danger: #8c392d;
+    color-scheme: light;
+    color: var(--plant-ink);
+    background-color: var(--plant-canvas);
+}
+
+html[data-plant-theme="dark"] {
+    color-scheme: dark;
+}
+
+[data-plant-theme="dark"] .plant-app {
+    --plant-canvas: #22221c;
+    --plant-paper: #2d2c24;
+    --plant-soft: #39372a;
+    --plant-line: #514c3e;
+    --plant-field-line: #8b806e;
+    --plant-ink: #eee6d6;
+    --plant-muted: #c5b9a6;
+    --plant-action: #b8c29b;
+    --plant-action-hover: #cbd4b2;
+    --plant-action-ink: #252b1d;
+    --plant-due: #efba9b;
+    --plant-due-paper: #3a2c24;
+    --plant-danger: #f3ac9b;
+    color-scheme: dark;
+}
+
+.plant-paper,
+.plant-app > nav,
+.plant-app [role="dialog"] {
+    background-color: var(--plant-paper);
+    border-color: var(--plant-line);
+}
+
+.plant-note {
+    background-color: var(--plant-soft);
+    border-color: var(--plant-line);
+}
+
+.plant-due {
+    background-color: var(--plant-due-paper);
+    border-color: var(--plant-line);
+}
+
+.plant-serif {
+    font-family: Baskervville, "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif;
+}
+
+.plant-primary {
+    background-color: var(--plant-action);
+    color: var(--plant-action-ink);
+}
+
+.plant-primary:hover {
+    background-color: var(--plant-action-hover);
+}
+
+.plant-secondary {
+    background-color: var(--plant-soft);
+    border-color: var(--plant-line);
+    color: var(--plant-ink);
+}
+
+.plant-secondary:hover {
+    background-color: var(--plant-line);
+}
+
+.plant-app :is(a, button, input, select, textarea):focus-visible {
+    outline: 2px solid var(--plant-action);
+    outline-offset: 2px;
+}
+
+.plant-app :is(input, select, textarea) {
+    background-color: var(--plant-paper);
+    border-color: var(--plant-field-line);
+    color: var(--plant-ink);
+}
+
+.plant-app :is(input, select, textarea):focus {
+    border-color: var(--plant-action);
+    --tw-ring-color: var(--plant-action);
+}
+
+.plant-app input::file-selector-button {
+    background-color: var(--plant-soft);
+    color: var(--plant-ink);
+}
+
+.plant-app :is(nav a, nav button, label) {
+    color: var(--plant-ink);
+}
+
+.plant-app nav .bg-white {
+    background-color: var(--plant-paper);
+}
+
+.plant-app nav .text-gray-500 {
+    color: var(--plant-muted);
+}
+
+.plant-app nav .text-gray-800 {
+    color: var(--plant-ink);
+}
+
+.plant-app nav .border-gray-200 {
+    border-color: var(--plant-line);
+}
+
+.plant-app nav :is(a, button):hover {
+    background-color: var(--plant-soft);
+}
+
+.plant-app [role="dialog"] {
+    border: 1px solid var(--plant-line);
+}
+
+.plant-app .text-red-600 {
+    color: var(--plant-danger);
+}

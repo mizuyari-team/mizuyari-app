@@ -1,15 +1,36 @@
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
+        <div class="flex h-16 items-stretch justify-between gap-3">
             <a href="{{ route('dashboard') }}" lang="ja" class="inline-flex items-center gap-3 font-semibold text-[#274238]">
-                <span class="grid size-9 place-items-center rounded-full bg-[#e9f0e5]" aria-hidden="true">
-                    <x-application-logo class="block h-5 w-auto fill-current" />
-                </span>
-                ホーム
+                @if ($plantTheme ?? false)
+                    <span class="size-3.5 -rotate-12 rounded-[80%_15%_80%_15%] bg-[var(--plant-action)]" aria-hidden="true"></span>
+                    水やり記録
+                @else
+                    <span class="grid size-9 place-items-center rounded-full bg-[#e9f0e5]" aria-hidden="true">
+                        <x-application-logo class="block h-5 w-auto fill-current" />
+                    </span>
+                    ホーム
+                @endif
             </a>
 
+            @if ($plantTheme ?? false)
+                <button
+                    type="button"
+                    lang="ja"
+                    role="switch"
+                    aria-label="ダークテーマ"
+                    aria-checked="false"
+                    x-bind:aria-checked="theme === 'dark'"
+                    x-on:click="toggleTheme"
+                    class="plant-secondary ml-auto my-auto inline-flex min-h-11 items-center gap-2 rounded-full border px-3 text-xs font-semibold"
+                >
+                    <span class="size-3 rounded-full border border-current" aria-hidden="true" x-bind:class="{ 'bg-current': theme === 'dark' }"></span>
+                    <span x-text="theme === 'dark' ? 'ダーク' : 'ライト'">ライト</span>
+                </button>
+            @endif
+
             <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
+            <div @class(['hidden sm:flex sm:items-center', 'sm:ms-6' => ! ($plantTheme ?? false)])>
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">

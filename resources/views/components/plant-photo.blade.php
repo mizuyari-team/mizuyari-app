@@ -1,6 +1,6 @@
 @props(['plant', 'lazy' => false])
 
-<div {{ $attributes->class('relative grid place-items-center overflow-hidden bg-[#e6ede1]') }}>
+<div {{ $attributes->class('plant-note relative grid place-items-center overflow-hidden') }}>
     @if ($plant->photo_path)
         <img
             src="{{ route('plants.photo', $plant) }}"
@@ -10,6 +10,6 @@
             decoding="async"
         >
     @else
-        <span class="text-xs text-[#48594f]">写真未登録</span>
+        <span class="text-xs text-[color:var(--plant-muted)]">写真未登録</span>
     @endif
 </div>

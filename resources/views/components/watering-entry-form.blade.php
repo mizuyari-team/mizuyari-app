@@ -46,7 +46,7 @@
                 max="4294967295"
                 aria-describedby="watering-amount-unit"
             />
-            <span id="watering-amount-unit" class="text-sm text-[#48594f]">mL</span>
+            <span id="watering-amount-unit" class="text-sm text-[color:var(--plant-muted)]">mL</span>
         </div>
         <x-input-error :messages="$errors->get('amount_ml')" class="mt-1" />
     </div>
@@ -60,9 +60,9 @@
             maxlength="1000"
             x-model="memo"
             aria-describedby="watering-memo-length"
-            class="mt-1 block w-full resize-y rounded-md border-gray-300 shadow-sm focus:border-[#527460] focus:ring-[#527460]"
+            class="mt-1 block w-full resize-y rounded-md border-gray-300 shadow-sm"
         >{{ $memo }}</textarea>
-        <p id="watering-memo-length" class="mt-1 text-right text-xs text-[#48594f]">
+        <p id="watering-memo-length" class="mt-1 text-right text-xs text-[color:var(--plant-muted)]">
             <span x-text="memo.length">{{ mb_strlen($memo) }}</span> / 1,000
         </p>
         <x-input-error :messages="$errors->get('memo')" class="mt-1" />
@@ -70,10 +70,10 @@
 
     <div class="flex flex-wrap justify-end gap-2 pt-2">
         @if ($modal)
-            <x-secondary-button type="button" x-on:click="$dispatch('close')">キャンセル</x-secondary-button>
+            <button type="button" x-on:click="$dispatch('close')" class="plant-secondary min-h-11 rounded-md border px-4 text-sm font-semibold">キャンセル</button>
         @else
-            <a href="{{ $back }}" class="inline-flex items-center rounded-md px-4 py-2.5 text-sm font-medium text-[#274238] hover:bg-[#e9f0e5]">キャンセル</a>
+            <a href="{{ $back }}" class="plant-secondary inline-flex min-h-11 items-center rounded-md border px-4 py-2.5 text-sm font-semibold">キャンセル</a>
         @endif
-        <button type="submit" class="rounded-md bg-[#315745] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#244536] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#315745]">登録</button>
+        <button type="submit" class="plant-primary min-h-11 rounded-md px-5 py-2.5 text-sm font-semibold">登録</button>
     </div>
 </form>

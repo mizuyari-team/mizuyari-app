@@ -1,5 +1,5 @@
 @if (session('success'))
-    <p role="status" class="mb-5 rounded-xl border border-[#dce2d5] bg-[#e9f0e5] px-4 py-3 text-sm font-medium text-[#274238]">
+    <p role="status" class="plant-note rounded-lg border px-4 py-3 text-sm font-medium">
         {{ session('success') }}
     </p>
 @endif

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePlantRequest;
+use App\Http\Requests\StoreWateringLogRequest;
 use App\Http\Requests\UpdatePlantRequest;
 use App\Models\Plant;
 use App\Services\PredictionService;
@@ -37,7 +38,15 @@ class PlantController extends Controller
             ->sortBy(fn (Plant $plant) => $plant->next_watering_date?->timestamp ?? PHP_INT_MAX)
             ->values();
 
-        return view('plants.index', compact('plants'));
+        $today = today(StoreWateringLogRequest::TIMEZONE);
+        $tomorrow = $today->copy()->addDay();
+        $schedule = $plants->groupBy(fn (Plant $plant) => match (true) {
+            $plant->next_watering_date === null => 'undated',
+            $plant->next_watering_date->lt($tomorrow) => 'due',
+            default => 'upcoming',
+        });
+
+        return view('plants.index', compact('plants', 'today', 'schedule'));
     }
 
     public function create(): View
@@ -152,6 +161,6 @@ class PlantController extends Controller
         return $this->predictionService->predictNextWateringDate(
             $plant->wateringLogs->pluck('watered_at'),
             $plant->default_interval_days
-        );
+        )?->setTimezone(StoreWateringLogRequest::TIMEZONE);
     }
 }

@@ -40,7 +40,7 @@
     <div class="grid grid-cols-2 gap-3">
         <div>
             <x-input-label for="plant-pot-size" value="鉢サイズ" />
-            <select id="plant-pot-size" name="pot_size" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#527460] focus:ring-[#527460]">
+            <select id="plant-pot-size" name="pot_size" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                 <option value="">選択なし</option>
                 @foreach (['小', '中', '大'] as $size)
                     <option value="{{ $size }}" @selected($inputValue('pot_size', $plant?->pot_size) === $size)>{{ $size }}</option>
@@ -52,7 +52,7 @@
             <x-input-label for="plant-daily-base" value="基準給水量（必須）" />
             <div class="mt-1 flex items-center gap-2">
                 <x-text-input id="plant-daily-base" name="daily_base_ml" type="number" inputmode="numeric" class="block w-full min-w-0" :value="$inputValue('daily_base_ml', $plant?->daily_base_ml ?? 100)" required min="1" max="10000" aria-describedby="plant-daily-base-unit" />
-                <span id="plant-daily-base-unit" class="text-sm text-[#48594f]">mL</span>
+                <span id="plant-daily-base-unit" class="text-sm text-[color:var(--plant-muted)]">mL</span>
             </div>
             <x-input-error :messages="$errors->get('daily_base_ml')" class="mt-1" />
         </div>
@@ -69,9 +69,9 @@
             name="photo"
             accept="image/jpeg,image/png"
             aria-describedby="plant-photo-help"
-            class="mt-1 block w-full cursor-pointer rounded-md border border-gray-300 p-1.5 text-sm text-[#48594f] file:mr-2 file:rounded file:border-0 file:bg-[#e9f0e5] file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-[#274238] focus-visible:outline-[#527460]"
+            class="mt-1 block w-full cursor-pointer rounded-md border border-gray-300 p-1.5 text-sm text-[color:var(--plant-muted)] file:mr-2 file:rounded file:border-0 file:px-3 file:py-1.5 file:text-sm file:font-medium"
         >
-        <p id="plant-photo-help" class="mt-1 text-xs text-[#48594f]">
+        <p id="plant-photo-help" class="mt-1 text-xs text-[color:var(--plant-muted)]">
             JPEG / PNG、1枚5MBまで。{{ $plant?->photo_path ? '選択すると現在の写真を差し替えます。' : '' }}
         </p>
         <x-input-error :messages="$errors->get('photo')" class="mt-1" />
@@ -79,13 +79,13 @@
 
     <div class="flex flex-wrap justify-end gap-2 pt-2">
         @if ($modal)
-            <x-secondary-button type="button" x-on:click="$dispatch('close')">キャンセル</x-secondary-button>
+            <button type="button" x-on:click="$dispatch('close')" class="plant-secondary min-h-11 rounded-md border px-4 text-sm font-semibold">キャンセル</button>
         @else
-            <a href="{{ $plant ? route('plants.show', $plant) : route('plants.index') }}" class="inline-flex items-center rounded-md px-4 py-2.5 text-sm font-medium text-[#274238] hover:bg-[#e9f0e5]">
+            <a href="{{ $plant ? route('plants.show', $plant) : route('plants.index') }}" class="plant-secondary inline-flex min-h-11 items-center rounded-md border px-4 py-2.5 text-sm font-semibold">
                 キャンセル
             </a>
         @endif
-        <button type="submit" class="rounded-md bg-[#315745] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#244536] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#315745]">
+        <button type="submit" class="plant-primary min-h-11 rounded-md px-5 py-2.5 text-sm font-semibold">
             {{ $plant ? '変更を保存' : '登録' }}
         </button>
     </div>

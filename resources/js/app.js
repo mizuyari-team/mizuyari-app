@@ -4,6 +4,21 @@ import Alpine from 'alpinejs';
 
 window.Alpine = Alpine;
 
+Alpine.data('plantTheme', () => ({
+    theme: document.documentElement.dataset.plantTheme === 'dark' ? 'dark' : 'light',
+
+    toggleTheme() {
+        this.theme = this.theme === 'dark' ? 'light' : 'dark';
+        document.documentElement.dataset.plantTheme = this.theme;
+
+        try {
+            localStorage.setItem('mizuyari.theme', this.theme);
+        } catch {
+            // The selected theme still applies when storage is unavailable.
+        }
+    },
+}));
+
 Alpine.data('wateringEntryForm', (initialMemo) => ({
     memo: initialMemo ?? '',
 
