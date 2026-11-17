@@ -5,16 +5,33 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePlantRequest;
 use App\Http\Requests\UpdatePlantRequest;
 use App\Models\Plant;
+use App\Services\PredictionService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class PlantController extends Controller
 {
-    public function index()
+    public function __construct(
+        private PredictionService $predictionService
+    ) {}
+
+    public function index(Request $request)
     {
-        $plants = auth()->user()->plants()
+        $plants = $request->user()
+            ->plants()
             ->where('is_demo', false)
-            ->orderBy('name')
-            ->get();
+            ->with('wateringLogs')
+            ->get()
+            ->map(function (Plant $plant) {
+                $plant->next_watering_date = $this->predictNextDate($plant);
+
+                return $plant;
+            })
+            ->sortBy(function (Plant $plant) {
+                return $plant->next_watering_date ? $plant->next_watering_date->timestamp : PHP_INT_MAX;
+            })
+            ->values();
 
         return view('plants.index', compact('plants'));
     }
@@ -41,7 +58,8 @@ class PlantController extends Controller
     {
         $this->authorize('view', $plant);
 
-        $plant->load(['wateringLogs' => fn ($q) => $q->latest('watered_at')]);
+        $plant->load('wateringLogs');
+        $plant->next_watering_date = $this->predictNextDate($plant);
 
         return view('plants.show', compact('plant'));
     }
@@ -58,15 +76,28 @@ class PlantController extends Controller
         $this->authorize('update', $plant);
 
         $data = $request->safe()->except('photo');
+        $oldPath = $plant->photo_path;
+        $newPath = null;
 
         if ($request->hasFile('photo')) {
-            if ($plant->photo_path) {
-                Storage::disk('public')->delete($plant->photo_path);
-            }
-            $data['photo_path'] = $request->file('photo')->store('plants', 'public');
+            $newPath = $request->file('photo')->store('plants', 'public');
+            $data['photo_path'] = $newPath;
         }
 
-        $plant->update($data);
+        try {
+            $plant->update($data);
+        } catch (Throwable $e) {
+            // 更新に失敗したら、保存した新しい写真を消して元の状態に戻す
+            if ($newPath) {
+                Storage::disk('public')->delete($newPath);
+            }
+            throw $e;
+        }
+
+        // 更新が成功してから、古い写真を消す
+        if ($newPath && $oldPath) {
+            Storage::disk('public')->delete($oldPath);
+        }
 
         return redirect()->route('plants.show', $plant);
     }
@@ -81,5 +112,13 @@ class PlantController extends Controller
         $plant->delete();
 
         return redirect()->route('plants.index');
+    }
+
+    private function predictNextDate(Plant $plant)
+    {
+        return $this->predictionService->predictNextWateringDate(
+            $plant->wateringLogs->pluck('watered_at'),
+            $plant->default_interval_days
+        );
     }
 }
