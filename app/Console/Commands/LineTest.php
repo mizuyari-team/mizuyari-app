@@ -20,20 +20,24 @@ class LineTest extends Command
 
         if (! $user) {
             $this->error('ユーザーが見つかりません: '.$this->argument('email'));
+
             return self::FAILURE;
         }
 
         if (empty($user->line_user_id)) {
             $this->error('このユーザーには line_user_id が登録されていません');
+
             return self::FAILURE;
         }
 
         if ($line->push($user->line_user_id, $this->option('message'))) {
             $this->info('送信しました');
+
             return self::SUCCESS;
         }
 
         $this->error('送信に失敗しました。storage/logs/laravel.log を確認してください');
+
         return self::FAILURE;
     }
 }

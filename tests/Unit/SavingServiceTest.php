@@ -12,7 +12,7 @@ class SavingServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new SavingService();
+        $this->service = new SavingService;
     }
 
     /**
