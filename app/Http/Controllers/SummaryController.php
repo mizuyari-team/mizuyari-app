@@ -36,9 +36,10 @@ class SummaryController extends Controller
             });
 
             $actualList = $periodLogs->pluck('amount_ml')->all();
-            $dailyBase = (float) ($plant->daily_base_ml ?? 500.0);
+            $dailyBase = (float) $plant->daily_base_ml;
+            $plantDays = (int) min($days, max(1, ceil($plant->created_at->diffInDays(now()))));
 
-            $saving = $this->savingService->calculateSavings($days, $actualList, $dailyBase);
+            $saving = $this->savingService->calculateSavings($plantDays, $actualList, $dailyBase);
 
             $totalBaselineMl += $saving['baseline_amount_ml'];
             $totalActualMl += $saving['actual_amount_ml'];
@@ -70,7 +71,7 @@ class SummaryController extends Controller
         // 2. 月別の給水量集計（直近6ヶ月分・Chart.js用）
         $monthlyTotals = [];
         for ($i = 5; $i >= 0; $i--) {
-            $monthKey = now()->subMonths($i)->format('Y-m');
+            $monthKey = now()->startOfMonth()->subMonths($i)->format('Y-m');
             $monthlyTotals[$monthKey] = 0;
         }
 
