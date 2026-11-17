@@ -1,17 +1,31 @@
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-stretch justify-between gap-3">
-            <a href="{{ route('dashboard') }}" lang="ja" class="inline-flex items-center gap-3 font-semibold text-[#274238]">
-                @if ($plantTheme ?? false)
-                    <span class="size-3.5 -rotate-12 rounded-[80%_15%_80%_15%] bg-[var(--plant-action)]" aria-hidden="true"></span>
-                    水やり記録
-                @else
-                    <span class="grid size-9 place-items-center rounded-full bg-[#e9f0e5]" aria-hidden="true">
-                        <x-application-logo class="block h-5 w-auto fill-current" />
-                    </span>
-                    ホーム
-                @endif
-            </a>
+            <div class="flex items-center gap-6">
+                <a href="{{ route('dashboard') }}" lang="ja" class="inline-flex items-center gap-3 font-semibold text-[#274238]">
+                    @if ($plantTheme ?? false)
+                        <span class="size-3.5 -rotate-12 rounded-[80%_15%_80%_15%] bg-[var(--plant-action)]" aria-hidden="true"></span>
+                        水やり記録
+                    @else
+                        <span class="grid size-9 place-items-center rounded-full bg-[#e9f0e5]" aria-hidden="true">
+                            <x-application-logo class="block h-5 w-auto fill-current" />
+                        </span>
+                        ホーム
+                    @endif
+                </a>
+
+                <a
+                    href="{{ route('summary.index') }}"
+                    lang="ja"
+                    @class([
+                        'inline-flex items-center border-b-2 px-1 pt-1 text-sm font-semibold transition',
+                        'border-[var(--plant-action,#274238)] text-[#274238]' => request()->routeIs('summary.*'),
+                        'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' => ! request()->routeIs('summary.*'),
+                    ])
+                >
+                    集計
+                </a>
+            </div>
 
             @if ($plantTheme ?? false)
                 <button
@@ -77,6 +91,15 @@
 
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+        <div class="pt-2 pb-3 space-y-1">
+            <x-responsive-nav-link :href="route('plants.index')" :active="request()->routeIs('plants.*')">
+                今日の水やり
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('summary.index')" :active="request()->routeIs('summary.*')">
+                集計
+            </x-responsive-nav-link>
+        </div>
+
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
             <div class="px-4">

@@ -132,4 +132,27 @@ class SummaryControllerTest extends TestCase
             \Carbon\Carbon::setTestNow();
         }
     }
+
+    public function test_navigation_has_summary_link_and_summary_renders_charts()
+    {
+        $user = User::factory()->create();
+        Plant::factory()->create([
+            'user_id' => $user->id,
+            'name' => 'モンステラ',
+            'is_demo' => false,
+        ]);
+
+        // 植物一覧ページのナビゲーションに集計リンクがあること
+        $indexResponse = $this->actingAs($user)->get(route('plants.index'));
+        $indexResponse->assertStatus(200);
+        $indexResponse->assertSee(route('summary.index'));
+        $indexResponse->assertSee('集計');
+
+        // 集計画面にグラフ描画用canvasと期間切り替えリンクがあること
+        $summaryResponse = $this->actingAs($user)->get(route('summary.index'));
+        $summaryResponse->assertStatus(200);
+        $summaryResponse->assertSee('monthlyWateringChart');
+        $summaryResponse->assertSee('plantComparisonChart');
+        $summaryResponse->assertSee(route('summary.index', ['days' => 7]));
+    }
 }
