@@ -7,10 +7,9 @@ class SavingService
     /**
      * 要件定義 F-12 に基づき節水量（ml）および節水率（%）を計算する
      *
-     * @param int $totalDays 期間日数
-     * @param array $actualAmountMlList 実際の給水量（amount_ml）の配列
-     * @param float $dailyBaseMl 1日あたりの想定給水量（ml）
-     * @return array
+     * @param  int  $totalDays  期間日数
+     * @param  array  $actualAmountMlList  実際の給水量（amount_ml）の配列
+     * @param  float  $dailyBaseMl  1日あたりの想定給水量（ml）
      */
     public function calculateSavings(
         int $totalDays,

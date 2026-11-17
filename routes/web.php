@@ -3,6 +3,7 @@
 use App\Http\Controllers\PlantController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SummaryController;
+use App\Http\Controllers\WateringLogController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -20,6 +21,13 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('plants', PlantController::class);
     Route::get('/summary', [SummaryController::class, 'index'])->name('summary.index');
+});
+
+
+Route::middleware('auth')->group(function () {
+    Route::resource('plants.watering-logs', WateringLogController::class)
+        ->only(['index', 'edit', 'update', 'destroy'])
+        ->scoped();
 });
 
 require __DIR__.'/auth.php';
