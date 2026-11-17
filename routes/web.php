@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\PlantController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SummaryController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -19,6 +20,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::resource('plants', PlantController::class)->only(['index', 'show']);
+    Route::get('/summary', [SummaryController::class, 'index'])->name('summary.index');
 });
 
 require __DIR__.'/auth.php';
